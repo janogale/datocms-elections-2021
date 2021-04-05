@@ -14,44 +14,31 @@
  * limitations under the License.
  */
 
-import { GetStaticProps } from 'next';
+import { useRouter } from 'next/router';
+import { SkipNavContent } from '@reach/skip-nav';
 
 import Page from '@components/page';
-import Schedule from '@components/schedule';
-import Layout from '@components/layout';
-import Header from '@components/header';
-
-import { getAllStages } from '@lib/cms-api';
-import { Stage } from '@lib/types';
+import ConfContent from '@components/index';
 import { META_DESCRIPTION } from '@lib/constants';
 
-type Props = {
-  allStages: Stage[];
-};
-
-export default function SchedulePage({ allStages }: Props) {
+export default function Conf() {
+  const { query } = useRouter();
   const meta = {
-    title: 'Schedule - Virtual Event Starter Kit',
+    title: 'Somaliland - Election Date',
     description: META_DESCRIPTION
+  };
+  const ticketNumber = query.ticketNumber?.toString();
+  const defaultUserData = {
+    id: query.id?.toString(),
+    ticketNumber: ticketNumber ? parseInt(ticketNumber, 10) : undefined,
+    name: query.name?.toString(),
+    username: query.username?.toString()
   };
 
   return (
-    <Page meta={meta}>
-      <Layout>
-        <Header hero="Schedule" description={meta.description} />
-        <Schedule allStages={allStages} />
-      </Layout>
+    <Page meta={meta} fullViewport>
+      <SkipNavContent />
+      <ConfContent defaultUserData={defaultUserData} />
     </Page>
   );
 }
-
-export const getStaticProps: GetStaticProps<Props> = async () => {
-  const allStages = await getAllStages();
-
-  return {
-    props: {
-      allStages
-    },
-    revalidate: 60
-  };
-};

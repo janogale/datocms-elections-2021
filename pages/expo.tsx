@@ -23,22 +23,26 @@ import Layout from '@components/layout';
 
 import { getAllSponsors } from '@lib/cms-api';
 import { Sponsor } from '@lib/types';
-import { META_DESCRIPTION } from '@lib/constants';
 
 type Props = {
   sponsors: Sponsor[];
 };
 
+const description = (<div>
+  <p>The Somaliland National Electoral Commission consists of seven members, and in line with Article 11(2) of the 2001 Election Law, <br />three members are nominated by the President of the Republic, two are  nominated by the House of Elders, and the remaining two were nominated by the registered “opposition” political parties.</p>
+  <p> The nominations are then  confirmed by the House of Representatives.  The term of office of the Commission is 5 years, which according to Article 11(1)(c) begins “the date the House of Representatives approves of its appointment”.</p>
+</div>)
+
 export default function ExpoPage({ sponsors }: Props) {
   const meta = {
-    title: 'Expo - Virtual Event Starter Kit',
-    description: META_DESCRIPTION
+    title: 'NEC Team - Somaliland Electrol Commision',
+    description: ""
   };
 
   return (
     <Page meta={meta}>
       <Layout>
-        <Header hero="Expo" description={meta.description} />
+        <Header hero="NEC Team" description={description} />
         <SponsorsGrid sponsors={sponsors} />
       </Layout>
     </Page>

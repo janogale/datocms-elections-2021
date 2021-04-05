@@ -17,28 +17,27 @@
 import { GetStaticProps, GetStaticPaths } from 'next';
 
 import Page from '@components/page';
-import StageContainer from '@components/stage-container';
+import SpeakerSection from '@components/speaker-section';
 import Layout from '@components/layout';
 
-import { getAllStages } from '@lib/cms-api';
-import { Stage } from '@lib/types';
+import { getAllSpeakers } from '@lib/cms-api';
+import { Speaker } from '@lib/types';
 import { META_DESCRIPTION } from '@lib/constants';
 
 type Props = {
-  stage: Stage;
-  allStages: Stage[];
+  speaker: Speaker;
 };
 
-export default function StagePage({ stage, allStages }: Props) {
+export default function SpeakerPage({ speaker }: Props) {
   const meta = {
-    title: 'Demo - Virtual Event Starter Kit',
+    title: 'Somaliland Candidates - 2021 Election',
     description: META_DESCRIPTION
   };
 
   return (
-    <Page meta={meta} fullViewport>
+    <Page meta={meta}>
       <Layout>
-        <StageContainer stage={stage} allStages={allStages} />
+        <SpeakerSection speaker={speaker} />
       </Layout>
     </Page>
   );
@@ -46,10 +45,10 @@ export default function StagePage({ stage, allStages }: Props) {
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const slug = params?.slug;
-  const stages = await getAllStages();
-  const stage = stages.find((s: Stage) => s.slug === slug) || null;
+  const speakers = await getAllSpeakers();
+  const currentSpeaker = speakers.find((s: Speaker) => s.slug === slug) || null;
 
-  if (!stage) {
+  if (!currentSpeaker) {
     return {
       notFound: true
     };
@@ -57,16 +56,15 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
 
   return {
     props: {
-      stage,
-      allStages: stages
+      speaker: currentSpeaker
     },
     revalidate: 60
   };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const stages = await getAllStages();
-  const slugs = stages.map((s: Stage) => ({ params: { slug: s.slug } }));
+  const speakers = await getAllSpeakers();
+  const slugs = speakers.map((s: Speaker) => ({ params: { slug: s.slug } }));
 
   return {
     paths: slugs,

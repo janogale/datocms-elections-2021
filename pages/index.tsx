@@ -14,34 +14,43 @@
  * limitations under the License.
  */
 
-import { useRouter } from 'next/router';
-import { SkipNavContent } from '@reach/skip-nav';
+import { GetStaticProps } from 'next';
 
 import Page from '@components/page';
-import ConfContent from '@components/index';
+import SpeakersGrid from '@components/speakers-grid';
+import Layout from '@components/layout';
+import Header from '@components/header';
+
+import { getAllSpeakers } from '@lib/cms-api';
+import { Speaker } from '@lib/types';
 import { META_DESCRIPTION } from '@lib/constants';
 
-export default function Conf() {
-  const { query } = useRouter();
+type Props = {
+  speakers: Speaker[];
+};
+
+export default function Speakers({ speakers }: Props) {
   const meta = {
-    title: 'Demo - Virtual Event Starter Kit',
+    title: 'Somaliland Candidates - 2021 Election',
     description: META_DESCRIPTION
   };
-  const ticketNumber = query.ticketNumber?.toString();
-  const defaultUserData = {
-    id: query.id?.toString(),
-    ticketNumber: ticketNumber ? parseInt(ticketNumber, 10) : undefined,
-    name: query.name?.toString(),
-    username: query.username?.toString()
-  };
-
   return (
-    <Page meta={meta} fullViewport>
-      <SkipNavContent />
-      <ConfContent
-        defaultUserData={defaultUserData}
-        defaultPageState={query.ticketNumber ? 'ticket' : 'registration'}
-      />
+    <Page meta={meta}>
+      <Layout>
+        <Header hero="Somaliland Candidates - 2021 Election" description={meta.description} />
+        <SpeakersGrid speakers={speakers} />
+      </Layout>
     </Page>
   );
 }
+
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const speakers = await getAllSpeakers();
+
+  return {
+    props: {
+      speakers
+    },
+    revalidate: 60
+  };
+};
